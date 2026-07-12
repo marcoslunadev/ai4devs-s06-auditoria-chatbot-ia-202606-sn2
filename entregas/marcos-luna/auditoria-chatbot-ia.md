@@ -20,7 +20,7 @@ Hemos desarrollado **Banqora Assistant (BQA)**, un chatbot conversacional integr
 - **Acciones que puede ejecutar:**
   - Bloqueo y desbloqueo temporal de tarjetas de débito/crédito por sospecha de pérdida o robo.
   - Generación y envío al correo electrónico registrado de extractos bancarios mensuales en PDF.
-  - Apertura automática de disputas de cargos no reconocidos o duplicados.
+  - Apertura automática de disputas de cargos no reconocidos o duplicados, incluyendo el procesamiento de reembolsos asociados para transacciones elegibles mediante la función `request_charge_reimbursement(transaction_id, amount)`.
 
 ---
 
@@ -31,7 +31,7 @@ Hemos desarrollado **Banqora Assistant (BQA)**, un chatbot conversacional integr
 **Categoría:** **Riesgo Limitado** (con estrictas fronteras que rozan el **Alto Riesgo** si varían sus funciones).
 
 **Justificación (condicionada por el sector):**
-El chatbot actúa principalmente como un asistente de atención al usuario y gestión operativa de su propia cuenta, lo cual entra en la clasificación de **Riesgo Limitado** (Art. 50 de la Ley de IA de la UE). El principal requisito es la transparencia: asegurar que el usuario sea plenamente consciente de que está hablando con una IA.
+De conformidad con el **Artículo 6** de la Ley de IA de la UE, el chatbot se clasifica como **Riesgo Limitado** por exclusión, dado que sus funciones actuales de asistencia general en atención al cliente y gestión de cuentas operativas no se encuentran listadas en ninguna de las categorías de alto riesgo detalladas en el **Anexo III**, ni constituyen prácticas prohibidas bajo el Artículo 5. Al no estar clasificado como de alto riesgo, el chatbot queda exento de las obligaciones correspondientes a dicha categoría, estando sujeto únicamente a los requisitos de transparencia establecidos en el **Artículo 50** por tratarse de un sistema de IA destinado a interactuar directamente con personas físicas.
 
 **Frontera de Alto Riesgo:**
 Según el **Anexo III (Punto 5, letra b) de la Ley de IA de la UE**, los sistemas de IA utilizados para evaluar la solvencia de personas físicas o establecer su calificación crediticia (credit scoring) se consideran de **Alto Riesgo**. 
@@ -43,25 +43,26 @@ Si *Banqora Assistant* expande sus capacidades para evaluar la elegibilidad de u
 |---|---|
 | **Transparencia en la interacción (Art. 50.1)** | Se debe notificar de forma visual, clara e inequívoca al usuario en el primer mensaje de la sesión que está interactuando con un sistema de inteligencia artificial. |
 | **Marcado de contenidos (Art. 50.2)** | Los documentos generados de forma automatizada por la IA (como resúmenes de gastos en PDF) deben contener marcas de agua digitales o metadatos legibles por máquina que los identifiquen como generados artificialmente. |
-| **Derecho a intervención humana** | Permitir al usuario solicitar el desvío a un agente humano en cualquier momento de la conversación, especialmente si la interacción se vuelve frustrante o requiere validación manual. |
+| **Intervención humana (Control recomendado / Art. 22 GDPR)** | Presentado como una buena práctica de negocio y control operativo para derivar la atención a un agente. Legalmente, es obligatorio bajo el Art. 22 del GDPR si se adoptasen decisiones basadas únicamente en el tratamiento automatizado que produzcan efectos jurídicos o le afecten significativamente (supuesto excluido en el alcance actual). |
 | **Gobernanza y calidad de datos (en frontera con Alto Riesgo)** | Si se utiliza información de transacciones para ajustar sugerencias financieras, los conjuntos de datos de entrenamiento deben someterse a auditorías de sesgo para evitar discriminaciones. |
 
-**Sanciones máximas por incumplimiento (vigentes desde agosto de 2026):**
+**Sanciones máximas por incumplimiento (capítulo de sanciones aplicable desde el 2 de agosto de 2025, a diferencia de la fecha general de aplicación de la norma fijada para el 2 de agosto de 2026):**
 - **Hasta 35 millones de euros o el 7%** de la facturación anual global del ejercicio anterior (la cantidad que sea mayor) si el chatbot utiliza de algún modo prácticas prohibidas (ej. manipulación subliminal de la conducta financiera de usuarios vulnerables).
 - **Hasta 15 millones de euros o el 3%** de la facturación anual global (la cantidad que sea mayor) si se vulneran los requisitos del sistema o las obligaciones de transparencia y de alto riesgo (si se implementara credit scoring sin cumplir el reglamento).
-- **Hasta 7.5 millones de euros o el 1.5%** de la facturación anual global por proveer información incorrecta, incompleta o engañosa a los organismos de control.
+- **Hasta 7.5 millones de euros o el 1%** de la facturación anual global por proveer información incorrecta, incompleta o engañosa a los organismos de control.
 
 ### 1.3 Principios del GDPR aplicables
 
-- **Base legal del tratamiento:**
+- **Bases legales por finalidad:**
   - **Ejecución del contrato (Art. 6.1.b del GDPR):** Para la consulta de saldos, movimientos y descarga de extractos, el tratamiento es indispensable para ejecutar el contrato de servicios bancarios solicitado por el cliente.
-  - **Obligación legal (Art. 6.1.c del GDPR) / Interés legítimo (Art. 6.1.f del GDPR):** Para la función de bloqueo preventivo de tarjetas, actuamos bajo la obligación de prevención del fraude de la directiva de pagos PSD2/PSD3 y bajo nuestro interés legítimo de mitigar riesgos financieros y robos.
+  - **Obligación legal (Art. 6.1.c del GDPR):** Para el bloqueo preventivo de tarjetas ante sospechas de fraude, el banco actúa bajo la obligación legal impuesta por el **Artículo 68(2) de la Directiva (UE) 2015/2366 (PSD2)** (y su correspondiente transposición nacional, ej. Art. 38.2 del Real Decreto-ley 19/2018 en España), que exige al proveedor de servicios de pago bloquear el instrumento de pago por razones de seguridad o sospecha de uso no autorizado o fraudulento.
+  - **Interés legítimo (Art. 6.1.f del GDPR):** Para aquellas situaciones de seguridad que excedan la obligación legal estricta (como la mitigación proactiva de riesgos financieros y robos de identidad), el tratamiento se justifica en el interés legítimo del banco para mitigar fraudes, riesgos financieros y robos. Se ha realizado un análisis de ponderación determinando que el interés superior de proteger los fondos del cliente y mantener la seguridad del sistema prevalece sobre los derechos del interesado, quien posee la expectativa razonable de que su banco actúe con celeridad ante sospechas de brecha.
 - **Minimización de datos:** 
   - El chatbot tiene un middleware de acceso a base de datos estructurado. No se le inyecta al modelo la totalidad de los datos del cliente, sino únicamente los fragmentos necesarios para responder. Por ejemplo, si el usuario pregunta: *"¿Cuánto gasté ayer en supermercados?"*, el middleware extrae únicamente las transacciones del día anterior categorizadas como "supermercados" y enmascara los identificadores bancarios antes de enviar los datos al LLM.
   - Los números de tarjeta de crédito y cuentas se presentan enmascarados de forma predeterminada (`ES89 **** **** **** 8822`).
 - **Privacidad por diseño y por defecto:**
-  - **Por diseño:** El sistema cuenta con una pasarela de anonimización local que sanitiza los prompts de entrada de los usuarios (eliminando DNI, números de teléfono u otros identificadores que el cliente escriba por error) antes de enviar la petición a la API del proveedor cloud.
-  - **Por defecto:** Las sesiones con la API del LLM se configuran con retención de datos desactivada para entrenamiento. Se firma un acuerdo específico (DPA) con el proveedor cloud (por ejemplo, Azure OpenAI bajo el paraguas europeo) que garantiza que las consultas no se utilizarán para mejorar sus modelos públicos y que los logs se eliminan automáticamente a los 30 días.
+  - **Por diseño:** El sistema cuenta con una pasarela de **pseudonimización** local que sanitiza los prompts de entrada de los usuarios (reemplazando DNI, nombres o números de cuenta por marcadores semánticos temporales) antes de enviar la petición a la API del proveedor cloud. Este proceso es reversible únicamente a nivel de middleware interno local, el cual conserva de forma segura la correspondencia con los identificadores originales para poder restaurar los datos en el canal de salida al usuario. Al ser un proceso reversible, se hace constar de manera explícita que la información tratada mantiene su condición de **datos personales** y, por consiguiente, continúan aplicándose plenamente todas las obligaciones y garantías del GDPR.
+  - **Por defecto:** Las garantías sobre la exclusión del entrenamiento de modelos con los datos de las conversaciones, el alojamiento y procesamiento de la información en una región geográfica específica dentro de la Unión Europea, y los plazos de retención o borrado automático de logs no se asumen como condiciones generales implícitas del servicio. Dichas salvaguardas dependen exclusivamente del proveedor cloud concreto que se contrate, del clausulado específico firmado en el **Acuerdo de Encargo de Tratamiento (DPA)** y de la configuración técnica implementada en la plataforma. Para que estas garantías sean efectivas, se debe auditar la **Política de Privacidad para Empresas (Enterprise Privacy Policy)** del proveedor y configurar explícitamente las políticas aplicables (por ejemplo, solicitando la desactivación del almacenamiento de logs de depuración o activando políticas de retención cero de datos si el proveedor lo permite).
 
 ---
 
@@ -96,18 +97,18 @@ Si *Banqora Assistant* expande sus capacidades para evaluar la elegibilidad de u
 
 ### 2.2 Inventario de PII
 
-| Dato (PII) | Origen | ¿Necesario para responder? |
-|---|---|---|
-| **Nombre y Apellidos** | CRM / Base de datos del perfil del cliente | **Sí**, para la personalización de la bienvenida y verificar la concordancia del cliente en la conversación. |
-| **DNI / NIE / Pasaporte** | Base de datos de perfil | **No**. Se utiliza para autenticación fuerte en la entrada, pero nunca debe viajar en texto plano dentro del contexto del LLM. |
-| **IBAN / Número de tarjeta** | Core Bancario / BD Cuentas | **Parcialmente**. Solo se deben extraer los últimos 4 dígitos enmascarados para que el cliente identifique de qué cuenta o tarjeta habla. |
-| **Historial de transacciones** | Base de datos de transacciones | **Sí**, imprescindible para dar soporte sobre cargos. Se deben pre-filtrar y enmascarar descripciones delicadas (pagos a partidos políticos, clínicas, etc.) mediante reglas regex/SLM locales antes de ir al LLM. |
-| **Teléfono y Correo Electrónico** | Base de datos de perfil | **Sí**, únicamente si el usuario solicita explícitamente el reenvío de un extracto o la activación de una alerta de seguridad. |
+| Dato (PII) | Origen | ¿Necesario para responder? | Destino / Procesador | Detalle de procesamiento y justificación |
+|---|---|---|---|---|
+| **Nombre y Apellidos** | CRM / Base de datos del perfil del cliente | **Sí** | **Backend Bancario** (Permanencia exclusiva en el backend; al LLM cloud solo viaja pseudonimizado como marcador `[NOMBRE]`). | Necesario para la personalización de la bienvenida y verificar la concordancia del cliente en la conversación. |
+| **DNI / NIE / Pasaporte** | Base de datos de perfil | **No** | **Backend Bancario** (Permanece estrictamente en el core del banco; nunca se envía al LLM cloud). | Se utiliza para autenticación fuerte en la entrada del canal, pero nunca debe viajar dentro del contexto de los prompts del LLM. |
+| **IBAN / Número de tarjeta** | Core Bancario / BD Cuentas | **Parcialmente** | **Backend Bancario** (El dato completo permanece en el core; solo viajan al LLM cloud los últimos 4 dígitos enmascarados). | Solo se deben extraer los últimos 4 dígitos enmascarados para que el cliente identifique de qué cuenta o tarjeta habla. |
+| **Historial de transacciones** | Base de datos de transacciones | **Sí** | **Backend local / Local SLM** (Se puede procesar íntegramente de manera local sin salir a la nube). | Imprescindible para dar soporte sobre cargos. Se deben pre-filtrar y enmascarar descripciones delicadas (pagos a partidos políticos, clínicas, etc.) mediante reglas regex/SLM locales antes de ir al LLM. |
+| **Teléfono y Correo Electrónico** | Base de datos de perfil | **Sí** | **Backend local / Local SLM** (Se procesan localmente para desencadenar el envío de extractos o alertas de seguridad sin salir a la nube). | Únicamente si el usuario solicita explícitamente el reenvío de un extracto o la activación de una alerta de seguridad. |
 
 **Qué pasaría si estas conversaciones llegan sin filtrar al proveedor del LLM:**
-- **Transferencia Internacional de Datos y Vulneración de GDPR:** Si el proveedor del LLM aloja las instancias en servidores fuera del Espacio Económico Europeo (por ejemplo, en EE.UU.) sin un marco de puerto seguro/cláusulas contractuales tipo activas, estaríamos cometiendo una infracción muy grave.
+- **Transferencia Internacional de Datos y Vulneración de GDPR:** Si el proveedor del LLM aloja las instancias en servidores fuera del Espacio Económico Europeo (por ejemplo, en EE.UU.) sin contar con una decisión de adecuación activa (Art. 45 del GDPR) o garantías adecuadas del Artículo 46 (como la firma de Cláusulas Contractuales Tipo o SCCs), y sin haber realizado la correspondiente Evaluación de Impacto de la Transferencia (TIA - Transfer Impact Assessment) exigida para analizar el marco normativo del país receptor, se incurriría en una infracción muy grave por transferencia internacional ilegal.
 - **Entrenamiento de Terceros con Datos Bancarios:** Si las conversaciones se utilizasen para re-entrenar el modelo comercial, un usuario externo en cualquier parte del mundo podría inducir al LLM a revelar información financiera específica de un cliente de Banqora mediante ataques de extracción de datos.
-- **Fuga de datos por brechas en el proveedor:** Un ciberataque al proveedor del LLM expondría el historial completo de consultas financieras, DNI y saldos de miles de usuarios del banco, provocando una crisis reputacional severa y sanciones de la AEPD que podrían alcanzar los 20 millones de euros.
+- **Fuga de datos por brechas en el proveedor:** Un ciberataque al proveedor del LLM expondría el historial completo de consultas financieras, DNI y saldos de miles de usuarios del banco, provocando una crisis reputacional severa y sanciones de la AEPD que podrían ascender a **hasta 20 millones de euros o el 4% de la facturación anual global del ejercicio financiero anterior, lo que resulte mayor** (según el Art. 83 del GDPR).
 
 ---
 
@@ -116,18 +117,20 @@ Si *Banqora Assistant* expande sus capacidades para evaluar la elegibilidad de u
 | Dimensión | LLM comercial (cloud) | Modelo local (p. ej. Ollama + Qwen 2.5) |
 |---|---|---|
 | **Coste** | Bajo coste inicial (pago por token). Coste operativo variable y potencialmente exponencial si el volumen de clientes aumenta a millones de peticiones mensuales. | Inversión inicial en hardware (servidores GPU dedicados en el Data Center del banco). Amortización en 6-12 meses para cargas altas. Coste eléctrico y de mantenimiento predecible. |
-| **Privacidad** | Los datos confidenciales de los usuarios salen de la infraestructura del banco hacia redes del proveedor. Mayor superficie de ataque. | **Máxima**. Soberanía total de la información. Los datos financieros nunca abandonan la red interna del banco ni cruzan fronteras. |
-| **Cumplimiento** | Requiere auditorías complejas sobre el proveedor cloud, firmas de DPA estrictas y adecuación con las normativas financieras NIS2 y DORA. | **Nativo y simplificado**. Al procesar todo en la infraestructura local auditada del banco, el cumplimiento con GDPR y reguladores financieros es inmediato. |
+| **Privacidad** | Los datos confidenciales de los usuarios salen de la infraestructura del banco hacia redes del proveedor. Mayor superficie de ataque. | Al implementarse como arquitectura híbrida, se envía contexto pseudonimizado al proveedor cloud. Se mitiga el riesgo de exposición directa de PII, pero persisten obligaciones de seguridad en tránsito y de control del canal externo. |
+| **Cumplimiento** | Requiere auditorías complejas sobre el proveedor cloud, firmas de DPA estrictas y adecuación con las normativas financieras NIS2 y DORA. | Aunque se reduzca la PII enviada a la nube, no existe un cumplimiento automático. Es obligatorio realizar evaluaciones de impacto (PIA y TIA) y asegurar que el subencargado cumpla las normativas vigentes. |
 | **Calidad** | Capacidad lingüística excelente, menor tasa de alucinaciones y alta versatilidad. | Calidad muy alta y suficiente para tareas financieras acotadas usando modelos especializados y cuantizados (e.g. Qwen 2.5 14B/32B o DeepSeek-R1-Distill-Llama-70B). |
 
 ### Recomendación final (coherente con el sector del Paso 0):
 
 Para el sector de **Banca**, la recomendación es implantar una **Arquitectura Híbrida de Seguridad (Hybrid Privacy Pipeline)**:
 
-1. **Pasarela de Anonimización y Clasificación Local (SLM):** Se despliega un modelo local de tamaño reducido (ej. Qwen 2.5 7B u Ollama en local) en la infraestructura privada del banco. Este modelo recibe la consulta del cliente y se encarga de:
-   - Identificar y sustituir cualquier dato PII (nombres, DNI, IBAN, importes específicos) por marcadores semánticos (ej. `[NOMBRE_1]`, `[IBAN_1]`, `[IMPORTE_1]`).
-   - Clasificar la consulta para asegurar que no contenga código malicioso o intentos obvios de Prompt Injection.
-2. **Procesamiento de Razonamiento en la Nube Segura:** La consulta anonimizada es enviada al LLM Cloud Comercial (ej. Azure OpenAI con despliegue restringido en la región de Europa). El LLM procesa la estructura abstracta y genera la respuesta conversacional con excelente calidad (ej. *"Hola [NOMBRE_1], para tu cuenta terminada en [IBAN_1] el cargo de [IMPORTE_1] corresponde a..."*).
-3. **Re-inyección Local de Datos:** El middleware de Banqora intercepta la respuesta generada por la nube y vuelve a inyectar localmente los valores reales del cliente almacenados temporalmente en la sesión segura del backend antes de mostrar la respuesta final en la pantalla del usuario.
+1. **Pasarela de Pseudonimización y Clasificación Local (SLM):** Se despliega un modelo local de tamaño reducido (ej. Qwen 2.5 7B en local) en la infraestructura privada del banco para sanitizar los datos de entrada (reemplazando nombres, DNI, IBAN o importes específicos por marcadores temporales). **Es crítico recalcar que este SLM local no actúa como una frontera de seguridad infalible frente a Prompt Injections complejas u otros ataques.**
+2. **Procesamiento de Razonamiento en la Nube Segura y Control en el Gateway Backend:** La consulta pseudonimizada es enviada al LLM Cloud Comercial para interpretar la intención y generar los argumentos de las funciones. Dado que las salidas del LLM cloud y el contenido recuperado de la conversación no son confiables, el gateway backend del banco debe tratar este flujo como inseguro por defecto. Antes de ejecutar cualquier llamada a una función o API transaccional (como bloqueos de tarjetas o disputas), el backend del banco aplicará controles estrictos e independientes:
+   - **Autorización:** Validación rigurosa de que la sesión del usuario está autorizada a nivel de objeto para acceder a esa cuenta o transacción específica.
+   - **Allowlists:** Control estricto de herramientas/APIs expuestas al modelo mediante listas blancas.
+   - **Límites de operaciones y confirmación fuerte:** Restricciones de importe máximo por operación conversacional y obligatoriedad de confirmación fuerte (ej. confirmación biométrica o OTP de doble factor) antes de consolidar cambios.
+   - **Validación de argumentos:** Validación e higienización independiente en el backend de cada parámetro devuelto por el LLM antes de procesar cualquier transacción financiera.
+3. **Renderizado Estructurado Local (en sustitución de Re-inyección Textual):** En lugar de realizar una sustitución de texto libre sobre marcadores (que podría verse afectada por la alteración o manipulación de formato del LLM), se adopta un flujo de renderizado estructurado. El backend del banco valida y devuelve referencias concretas y campos específicos del cliente que están estrictamente autorizados para la sesión y solicitud actuales. La aplicación del cliente (frontend local) renderiza de manera independiente dichos campos validados en plantillas predefinidas y seguras, sin confiar ni evaluar marcadores de texto plano que hayan podido ser generados o modificados de forma arbitraria por el modelo en la nube.
 
 Esta arquitectura combina el extraordinario rendimiento cognitivo de los modelos en la nube comercial con la inquebrantable privacidad y seguridad exigida por la normativa financiera bancaria.
